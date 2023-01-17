@@ -1,18 +1,5 @@
-// Example with Node.js native http module
-// import http from 'http'
-
-// const app = http.createServer((req, res) => {
-//   res.writeHead(200, { 'Content-Type': 'text/plain' })
-//   console.log('Hello World!')
-//   res.end('Hello World!')
-// })
-
-// const server = app.listen(3000, () => {
-//   console.log(`Hello world at http://localhost:${server.address().port}`)
-// })
-
-// Example with Express
 import express from 'express'
+import { isAdmin } from './utils/middleware.js'
 
 const port = 3000
 const app = express()
@@ -20,37 +7,78 @@ const app = express()
 // app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-const helloWold = (req, res) => {
+// const helloWold = (req, res) => {
+//   res.send({
+//     message: 'Hello World!',
+//   })
+// }
+// const getById = (req, res) => {
+//   const { id, name } = req.params
+//   res.send({
+//     name,
+//     id,
+//   })
+// }
+
+// const examplePost = (req, res) => {
+//   const { message, name, age } = req?.body
+//   res.send({
+//     type: 'POST',
+//     name,
+//     age,
+//     message,
+//   })
+// }
+
+const initialMessage = () => {
+  console.log(`Hello world at http://localhost:${port}`)
+}
+
+//CRUD
+
+//Create
+app.post('/', (req, res) => {
+  const { name, age } = req.body
+  res.send({
+    name,
+    age,
+  })
+})
+
+//Read
+app.get('/', (req, res) => {
   res.send({
     message: 'Hello World!',
   })
-}
-const getById = (req, res) => {
+})
+
+//Read by Id
+app.get('/:id/:name', (req, res) => {
   const { id, name } = req.params
   res.send({
     name,
     id,
   })
-}
+})
 
-const examplePost = (req, res) => {
-  const { message, name, age } = req?.body
+app.use(isAdmin)
+//Update
+app.put('/:id', (req, res) => {
+  const { id } = req.params
+  const { name, age } = req.body
   res.send({
-    type: 'POST',
+    id,
     name,
     age,
-    message,
   })
-}
+})
 
-const initialPort = () => {
-  console.log(`Hello world at http://localhost:${port}`)
-}
+//Delete
+app.delete('/:id', (req, res) => {
+  const { id } = req.params
+  res.send({
+    id,
+  })
+})
 
-app.get('/', helloWold)
-
-app.get('/:id/:name', getById)
-
-app.post('/', examplePost)
-
-app.listen(port, initialPort)
+app.listen(port, initialMessage)
