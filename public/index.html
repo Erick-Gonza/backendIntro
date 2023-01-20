@@ -9,8 +9,19 @@
   </head>
   <body>
     <section class="container">
-      <h2>Hello</h2>
-      <p id="userId"></p>
+      <h2 id="user" class="user"></h2>
+      <div class="chat-container">
+        <div class="chat-box__messages" id="chat"></div>
+        <form class="chat-box__form" id="chat-form">
+          <input
+            type="text"
+            class="chat-box__input"
+            placeholder="Type a message"
+            id="msg"
+          />
+          <input type="submit" class="chat-box__btn" value="Send" />
+        </form>
+      </div>
     </section>
 
     <script src="/socket.io/socket.io.js"></script>
