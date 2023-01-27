@@ -1,10 +1,8 @@
-const Chat = ({ data }) => {
-  console.log(data, 'chatComponent')
+const Chat = ({ message }) => {
   return (
     <>
-      <h2>{data.name}</h2>
-
-      <dt>{data.message}</dt>
+      <dt className="text-white">{message.user} :</dt>
+      <dd className="text-white">{message.message}</dd>
     </>
   )
 }

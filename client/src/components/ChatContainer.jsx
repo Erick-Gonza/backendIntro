@@ -1,18 +1,22 @@
 import { useContext } from 'react'
 import { chatContext } from '../context/ChatContext'
 import Chat from './Chat'
+import FormMessage from './FormMessage'
 
 const ChatContainer = () => {
-  const { chatHistory } = useContext(chatContext)
-  // console.log(chatHistory, 'chat Rooms')
+  const { newMessages, roomSelected, emmitMessage } = useContext(chatContext)
 
   return (
-    <div className="w-4/5 border-2 border-red-600">
-      <dl>
-        {chatHistory.map((data, index) => {
-          return <Chat data={data} index={index} key={index} />
-        })}
-      </dl>
+    <div className="w-4/5 border-2 border-white rounded-md bg-slate-400 flex flex-col">
+      <section className="flex-1 rounded-b-md">
+        <dl>
+          {newMessages &&
+            newMessages.map((message, key) => {
+              return <Chat message={message} key={key} />
+            })}
+        </dl>
+      </section>
+      <FormMessage roomSelected={roomSelected} emmitMessage={emmitMessage} />
     </div>
   )
 }

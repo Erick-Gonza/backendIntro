@@ -1,29 +1,43 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
 
 export const chatContext = createContext()
 const { Provider } = chatContext
 
-export const ChatContext = ({ children }) => {
-  const socket = io('http://localhost:3001')
-  const [roomSelected, setRoomSelected] = useState('room-1')
-  const [chatHistory, setChatHistory] = useState([])
+const ChatProvider = ({ children }) => {
+  const socket = io('http://localhost:3000')
 
-  const handleChatHistory = (message) => {
-    setChatHistory((prev) => [...prev, message])
+  const [roomSelected, setRoomSelected] = useState('room1')
+  const [newMessages, setMessages] = useState([])
+
+  const changeRoom = (room) => {
+    setRoomSelected(room)
+  }
+
+  const emmitMessage = (dataMessage) => {
+    socket.emit('newMessage', dataMessage)
   }
 
   useEffect(() => {
     socket.emit('room', roomSelected)
+
+    socket.on('messages', (messages) => {
+      setMessages(messages)
+    })
+
+    return () => {
+      socket.off('room')
+      socket.off('messages')
+    }
   }, [roomSelected])
 
-  socket.on('message', (message) => handleChatHistory(message))
-
-  const chatSession = {
+  const dataChatContext = {
     roomSelected,
-    chatHistory,
+    newMessages,
+    changeRoom,
+    emmitMessage,
   }
-  return <Provider value={chatSession}>{children}</Provider>
+  return <Provider value={dataChatContext}>{children}</Provider>
 }
 
-export default ChatContext
+export default ChatProvider

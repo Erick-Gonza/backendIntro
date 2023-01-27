@@ -9,34 +9,42 @@ const io = new Server(httpServer, {
     origin: 'http://localhost:5173',
   },
 })
-const port = 3001
 
 const rooms = {
-  'room-1': {
-    name: 'room-1',
-    message: 'Welcome to room-1',
-    users: [],
-  },
-  'room-2': {
-    name: 'room-2',
-    message: 'Welcome to room-2',
-    users: [],
-  },
-  'room-3': {
-    name: 'room-3',
-    message: 'Welcome to room-3',
-    users: [],
-  },
+  room1: [
+    {
+      user: 'system',
+      message: 'room-1',
+    },
+  ],
+  room2: [
+    {
+      user: 'system',
+      message: 'room-2',
+    },
+  ],
+  room3: [
+    {
+      user: 'system',
+      message: 'room-3',
+    },
+  ],
 }
 
 io.on('connection', (socket) => {
   socket.on('room', (room) => {
-    socket.join(rooms[room])
-    io.to(rooms[room]).emit('message', rooms[room])
-    rooms[room].users.push(socket.id)
+    socket.join(room)
+    io.to(room).emit('messages', rooms[room])
+  })
+
+  socket.on('newMessage', (newMessage) => {
+    const [messages, room] = newMessage
+    rooms[room].push(messages)
+    socket.join(room)
+    io.to(room).emit('messages', rooms[room])
   })
 })
 
-httpServer.listen(port, () => {
-  console.log(`listening on port: ${port}`)
+httpServer.listen(3000, () => {
+  console.log('Server 0k')
 })
